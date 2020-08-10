@@ -11,5 +11,5 @@ interface ViquseJobRepository : JpaRepository<ViquseJob, UUID> {
 
     fun findFirstByStatusIn(statuses: List<Status>): List<ViquseJob>
 
-    fun findByStatusIn(statuses: List<Status>): List<ViquseJob>
+    fun findByStatusInOrderByCreatedDate(statuses: List<Status>): List<ViquseJob>
 }
