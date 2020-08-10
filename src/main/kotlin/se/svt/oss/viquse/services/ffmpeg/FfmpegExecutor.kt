@@ -32,8 +32,6 @@ class FfmpegExecutor() {
         catch(e: Exception) {
             log.error(e) { "Failed Job" }
             throw e
-        } finally {
-            workDir.deleteRecursively()
         }
     }
 

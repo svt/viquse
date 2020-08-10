@@ -6,6 +6,7 @@ import se.svt.oss.viquse.model.Status
 import se.svt.oss.viquse.model.ViquseJob
 import se.svt.oss.viquse.repository.ViquseJobRepository
 import se.svt.oss.viquse.services.ffmpeg.FfmpegExecutor
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -21,9 +22,14 @@ class JobService(
 
         if (newJob != null) {
             logger.debug { "Launching job $newJob" }
+            newJob.status = Status.IN_PROGRESS
+            repository.saveAndFlush(newJob)
             val workDir = Files.createTempDirectory("viquseJob")
             val command = inputParams(newJob, workDir.toAbsolutePath())
             ffmpegExecutor.run(newJob, workDir = workDir.toFile(), command = command)
+            newJob.status = Status.SUCCESSFUL
+            repository.saveAndFlush(newJob)
+            logger.info { File("$workDir/vmaf.log").readText() }
         }
     }
 
