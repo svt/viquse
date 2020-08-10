@@ -12,8 +12,9 @@ import java.nio.file.Path
 
 @Service
 class JobService(
-        private val repository: ViquseJobRepository,
-        private val ffmpegExecutor: FfmpegExecutor) {
+    private val repository: ViquseJobRepository,
+    private val ffmpegExecutor: FfmpegExecutor
+) {
 
     private val logger = KotlinLogging.logger { }
 

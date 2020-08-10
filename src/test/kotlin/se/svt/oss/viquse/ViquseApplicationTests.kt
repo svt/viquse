@@ -29,6 +29,5 @@ class ViquseApplicationTests {
         repository.saveAndFlush(job)
 
         jobService.runNextJob()
-
     }
 }
