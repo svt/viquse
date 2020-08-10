@@ -24,5 +24,6 @@ data class Metrics(
     val vif_scale0: Double,
     val vif_scale1: Double,
     val vif_scale2: Double,
+    val vif_scale3: Double,
     val vmaf: Double
 )

@@ -34,6 +34,20 @@ class JobResultTest {
             "vmaf"
         )
         assertThat(result.frames).hasSize(25)
+        assertThat(result).hasFrames(
+            Frame(
+                frameNum = 0,
+                metrics = Metrics(
+                    adm2 = 0.99559,
+                    motion2 = 0.0,
+                    vif_scale0 = 0.94209,
+                    vif_scale1 = 0.98624,
+                    vif_scale2 = 0.99132,
+                    vif_scale3 = 0.99447,
+                    vmaf = 95.54361
+                )
+            )
+        )
         assertThat(result).hasVmafScore(96.05584654566408)
         assertThat(result).hasExecFps(15.86690462640109)
     }
