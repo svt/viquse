@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ViquseApplication
 
 fun main(args: Array<String>) {
-	runApplication<ViquseApplication>(*args)
+    runApplication<ViquseApplication>(*args)
 }
