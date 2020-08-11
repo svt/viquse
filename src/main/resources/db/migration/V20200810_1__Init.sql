@@ -25,3 +25,17 @@ CREATE TABLE result_summary (
     pool VARCHAR(128),
     frame_count INTEGER
 );
+
+CREATE TABLE result_summary_frame_results (
+    result_summary_id INTEGER,
+    frame_number INTEGER,
+    adm2  FLOAT,
+    motion2 FLOAT,
+    vif_scale0 FLOAT,
+    vif_scale1 FLOAT,
+    vif_scale2 FLOAT,
+    vif_scale3 FLOAT,
+    vmaf FLOAT
+);
+
+CREATE INDEX idx_result_summary_frame_results ON result_summary_frame_results(result_summary_id, frame_number);

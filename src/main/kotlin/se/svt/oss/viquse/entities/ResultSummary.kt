@@ -4,6 +4,7 @@ import se.svt.oss.viquse.model.vmaf.JobResult
 import java.util.UUID
 import javax.persistence.Access
 import javax.persistence.AccessType
+import javax.persistence.ElementCollection
 import javax.persistence.Embeddable
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -16,14 +17,16 @@ data class ResultSummary(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0,
         val version: String,
-        val vmafScore: Double,
-        val execFps: Double,
+        val vmafScore: Float,
+        val execFps: Float,
         val model: String,
         val scaledWidth: Int,
         val scaledHeight: Int,
         val subsample: Int,
         val pool: String,
-        val frameCount: Int
+        val frameCount: Int,
+        @ElementCollection
+        val frameResults: List<FrameResult>
 ) {
 
         companion object {
@@ -37,7 +40,8 @@ data class ResultSummary(
                                 scaledHeight = jobResult.scaledHeight,
                                 subsample = jobResult.subsample,
                                 pool = jobResult.pool,
-                                frameCount = jobResult.frames.size
+                                frameCount = jobResult.frames.size,
+                                frameResults = jobResult.frames.map { FrameResult.fromFrame(it) }
                         )
         }
 }

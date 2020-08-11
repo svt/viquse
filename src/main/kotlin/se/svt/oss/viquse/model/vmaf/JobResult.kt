@@ -10,9 +10,9 @@ data class JobResult(
     val metrics: List<String>,
     val frames: List<Frame>,
     @JsonProperty("VMAF score")
-    val vmafScore: Double,
+    val vmafScore: Float,
     @JsonProperty("ExecFps")
-    val execFps: Double
+    val execFps: Float
 ) {
 
     val model: String
@@ -33,11 +33,11 @@ data class Frame(
 )
 
 data class Metrics(
-    val adm2: Double,
-    val motion2: Double,
-    val vif_scale0: Double,
-    val vif_scale1: Double,
-    val vif_scale2: Double,
-    val vif_scale3: Double,
-    val vmaf: Double
+    val adm2: Float,
+    val motion2: Float,
+    val vif_scale0: Float,
+    val vif_scale1: Float,
+    val vif_scale2: Float,
+    val vif_scale3: Float,
+    val vmaf: Float
 )

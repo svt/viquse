@@ -38,17 +38,17 @@ class JobResultTest {
             Frame(
                 frameNum = 0,
                 metrics = Metrics(
-                    adm2 = 0.99559,
-                    motion2 = 0.0,
-                    vif_scale0 = 0.94209,
-                    vif_scale1 = 0.98624,
-                    vif_scale2 = 0.99132,
-                    vif_scale3 = 0.99447,
-                    vmaf = 95.54361
+                    adm2 = 0.99559f,
+                    motion2 = 0.0f,
+                    vif_scale0 = 0.94209f,
+                    vif_scale1 = 0.98624f,
+                    vif_scale2 = 0.99132f,
+                    vif_scale3 = 0.99447f,
+                    vmaf = 95.54361f
                 )
             )
         )
-        assertThat(result).hasVmafScore(96.05584654566408)
-        assertThat(result).hasExecFps(15.86690462640109)
+        assertThat(result).hasVmafScore(96.05584654566408f)
+        assertThat(result).hasExecFps(15.86690462640109f)
     }
 }
