@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: viquse
+  cloud:
+    config:
+      enabled: false
