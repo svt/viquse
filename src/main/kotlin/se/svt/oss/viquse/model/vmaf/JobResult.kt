@@ -1,8 +1,6 @@
 package se.svt.oss.viquse.model.vmaf
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import javax.persistence.Embedded
 
 data class JobResult(
     val version: String,

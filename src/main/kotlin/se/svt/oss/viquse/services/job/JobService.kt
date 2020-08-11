@@ -6,8 +6,8 @@ import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import se.svt.oss.viquse.entities.ResultSummary
-import se.svt.oss.viquse.model.Status
 import se.svt.oss.viquse.entities.ViquseJob
+import se.svt.oss.viquse.model.Status
 import se.svt.oss.viquse.model.vmaf.JobResult
 import se.svt.oss.viquse.repository.ResultSummaryRepository
 import se.svt.oss.viquse.repository.ViquseJobRepository

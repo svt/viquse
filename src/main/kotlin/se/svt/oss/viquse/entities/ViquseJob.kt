@@ -8,8 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate
 import se.svt.oss.viquse.model.Status
 import java.time.LocalDateTime
 import java.util.UUID
-import javax.persistence.ElementCollection
-import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated

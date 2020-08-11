@@ -17,9 +17,9 @@ class FfmpegExecutor() {
     val progressRegex = Regex(".*frame= *(?<frame>[\\d+]+) fps= *(?<fps>[\\d.+]+) .* speed= *(?<speed>[0-9.e-]+x) *")
 
     fun run(
-            viquseJob: ViquseJob,
-            workDir: File,
-            command: List<String>
+        viquseJob: ViquseJob,
+        workDir: File,
+        command: List<String>
     ): List<String> {
 
         return try {
