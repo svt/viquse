@@ -53,6 +53,8 @@ class JobService(
     private fun inputParams(job: ViquseJob, logPath: Path): List<String> = listOf(
         "ffmpeg",
         "-hide_banner",
+        "-loglevel",
+        "+level",
         "-i",
         job.referenceFile,
         "-i",
