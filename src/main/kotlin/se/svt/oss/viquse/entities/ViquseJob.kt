@@ -1,19 +1,20 @@
-package se.svt.oss.viquse.model
+package se.svt.oss.viquse.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonTypeName
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import se.svt.oss.viquse.model.vmaf.StoredJobResult
+import se.svt.oss.viquse.model.Status
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.ElementCollection
+import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -38,8 +39,8 @@ data class ViquseJob(
 
     var message: String? = null
 
-    @ElementCollection
-    val jobResults: List<StoredJobResult> = emptyList()
+    @OneToOne
+    var resultSummary: ResultSummary? = null
 
     val contextMap: Map<String, String>
         @JsonIgnore

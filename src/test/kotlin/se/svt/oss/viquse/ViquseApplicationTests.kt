@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.Resource
-import se.svt.oss.viquse.model.ViquseJob
+import se.svt.oss.viquse.entities.ViquseJob
 import se.svt.oss.viquse.repository.ViquseJobRepository
 import se.svt.oss.viquse.services.job.JobService
 

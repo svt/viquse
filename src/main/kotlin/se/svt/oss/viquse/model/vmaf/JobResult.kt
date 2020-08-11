@@ -1,6 +1,8 @@
 package se.svt.oss.viquse.model.vmaf
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import javax.persistence.Embedded
 
 data class JobResult(
     val version: String,
@@ -11,7 +13,19 @@ data class JobResult(
     val vmafScore: Double,
     @JsonProperty("ExecFps")
     val execFps: Double
-)
+) {
+
+    val model: String
+        get() = params["model"] as String
+    val scaledWidth: Int
+        get() = params["scaledWidth"] as Int
+    val scaledHeight: Int
+        get() = params["scaledHeight"] as Int
+    val subsample: Int
+        get() = params["subsample"] as Int
+    val pool: String
+        get() = params["pool"] as String
+}
 
 data class Frame(
     val frameNum: Int,
