@@ -49,10 +49,12 @@ class JobService(
                 logger.info { logFile }
             } catch (exception: Exception) {
                 logger.error(exception) { "Job failed" }
-                repository.save(newJob.apply {
-                    status = Status.FAILED
-                    message = exception.message
-                })
+                repository.save(
+                    newJob.apply {
+                        status = Status.FAILED
+                        message = exception.message
+                    }
+                )
             }
         }
     }
