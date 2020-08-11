@@ -31,21 +31,29 @@ class JobService(
         val newJob = repository.findByStatusInOrderByCreatedDate(listOf(Status.NEW)).firstOrNull()
 
         if (newJob != null) {
-            logger.debug { "Launching job $newJob" }
-            newJob.status = Status.IN_PROGRESS
-            repository.saveAndFlush(newJob)
-            val workDir = Files.createTempDirectory("viquseJob")
-            val command = inputParams(newJob, workDir.toAbsolutePath())
-            ffmpegExecutor.run(newJob, workDir = workDir.toFile(), command = command)
-            newJob.status = Status.SUCCESSFUL
+            try {
+                logger.debug { "Launching job $newJob" }
+                newJob.status = Status.IN_PROGRESS
+                repository.saveAndFlush(newJob)
+                val workDir = Files.createTempDirectory("viquseJob")
+                val command = inputParams(newJob, workDir.toAbsolutePath())
+                ffmpegExecutor.run(newJob, workDir = workDir.toFile(), command = command)
+                newJob.status = Status.SUCCESSFUL
 
-            val logFile = File("$workDir/vmaf.log").readText()
-            val jobResult = objectMapper.readValue<JobResult>(logFile)
-            val resultSummary = ResultSummary.fromJobResult(jobResult)
-            resultSummaryRepository.saveAndFlush(resultSummary)
-            newJob.resultSummary = resultSummary
-            repository.saveAndFlush(newJob)
-            logger.info { logFile }
+                val logFile = File("$workDir/vmaf.log").readText()
+                val jobResult = objectMapper.readValue<JobResult>(logFile)
+                val resultSummary = ResultSummary.fromJobResult(jobResult)
+                resultSummaryRepository.saveAndFlush(resultSummary)
+                newJob.resultSummary = resultSummary
+                repository.saveAndFlush(newJob)
+                logger.info { logFile }
+            } catch (exception: Exception) {
+                logger.error(exception) { "Job failed" }
+                repository.save(newJob.apply {
+                    status = Status.FAILED
+                    message = exception.message
+                })
+            }
         }
     }
 
