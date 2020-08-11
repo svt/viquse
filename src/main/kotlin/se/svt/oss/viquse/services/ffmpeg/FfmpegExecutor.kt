@@ -48,7 +48,7 @@ class FfmpegExecutor() {
             .start()
 
         val errorLines = mutableListOf<String>()
-        ffmpegProcess.inputStream.reader().useLines { lines ->
+        ffmpegProcess.inputStream.bufferedReader().useLines { lines ->
             lines.forEach { line ->
                 val progress = getProgress(numFrames, line)
                 if (progress != null) {
@@ -62,7 +62,7 @@ class FfmpegExecutor() {
                             log.warn { line }
                             errorLines.add(line)
                         }
-                        else -> log.debug { line }
+                        else -> log.info { line }
                     }
                 }
             }
