@@ -107,7 +107,9 @@ Viquse can use
           fail-fast: true
           
 # License
+Copyright 2020 Sveriges Television AB
 
+This software is released under the [European Union Public Licence (EUPL v1.2)](LICENSE).
           
 # Credits and references
 * https://github.com/Netflix/vmaf
