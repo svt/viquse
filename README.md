@@ -6,6 +6,7 @@
       ╚═══╝  ╚═╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝
                  VIDEO QUALITY SERVER
                                               
+[![REUSE status](https://api.reuse.software/badge/git.fsfe.org/reuse/api)](https://api.reuse.software/info/git.fsfe.org/reuse/api)
 
 Viquse is a service for calculating objective video quality metrics. It currently supports
  [VMAF](https://github.com/Netflix/vmaf), [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio),

@@ -1,3 +1,7 @@
+-- SPDX-FileCopyrightText: 2020 Sveriges Television AB
+--
+-- SPDX-License-Identifier: EUPL-1.2
+
 CREATE TABLE viquse_job (
   reference_file              VARCHAR(1024),
   transcoded_file              VARCHAR(1024),
