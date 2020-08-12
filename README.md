@@ -64,7 +64,8 @@ finished, you can see the result in the location given by `_links.resultSummary.
 ## Configuration
 Viquse is a spring boot app and as such can be configured in different ways, 
 see https://docs.spring.io/spring-boot/docs/1.2.2.RELEASE/reference/html/boot-features-external-config.html. The 
-easiest way is to create a application.yml/application.properties in the directory where viquse is started or to use
+easiest way is to create a application.yml/application.properties in the directory where viquse is started (note
+: this might not work if run with `gradle bootRun`) or to use
 environment variables.
 
 ### Database
