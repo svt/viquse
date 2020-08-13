@@ -10,7 +10,12 @@ management:
     web:
       base-path: /
 
+
 poll:
   job:
     delay: 10000
     initial-delay: 10000
+
+feign:
+  okhttp:
+    enabled: true

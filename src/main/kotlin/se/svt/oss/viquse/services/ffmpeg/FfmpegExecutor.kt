@@ -4,6 +4,8 @@
 
 package se.svt.oss.viquse.services.ffmpeg
 
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.sendBlocking
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import se.svt.oss.viquse.entities.ViquseJob
@@ -23,13 +25,17 @@ class FfmpegExecutor() {
     fun run(
         viquseJob: ViquseJob,
         workDir: File,
-        command: List<String>
+        command: List<String>,
+        progressChannel: SendChannel<Int>
     ): List<String> {
 
         return try {
+            // TODO numFrames should be read from file
             runFfmpeg(command, workDir, 100) {
                 log.info { "Progress: $it" }
+                progressChannel.sendBlocking(it)
             }
+            progressChannel.close()
             emptyList()
         } catch (e: Exception) {
             log.error(e) { "Failed Job" }
@@ -94,9 +100,6 @@ class FfmpegExecutor() {
         }
         onProgress(100)
     }
-
-    private fun totalProgress(subtaskProgress: Int, subtaskIndex: Int, subtaskCount: Int) =
-        (subtaskIndex * 100 + subtaskProgress) / subtaskCount
 
     private fun getProgress(numFrames: Int, line: String): Int? {
         return if (numFrames > 0) {

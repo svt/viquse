@@ -46,9 +46,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.6")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("io.github.openfeign:feign-okhttp")
+
     implementation("io.github.microutils:kotlin-logging:1.7.10")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
+
     implementation("org.flywaydb:flyway-core")
     implementation("org.mariadb.jdbc:mariadb-java-client")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

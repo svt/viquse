@@ -6,6 +6,18 @@ package se.svt.oss.viquse.services.job
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.sample
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -15,6 +27,7 @@ import se.svt.oss.viquse.model.Status
 import se.svt.oss.viquse.model.vmaf.JobResult
 import se.svt.oss.viquse.repository.ResultSummaryRepository
 import se.svt.oss.viquse.repository.ViquseJobRepository
+import se.svt.oss.viquse.services.callback.CallbackService
 import se.svt.oss.viquse.services.ffmpeg.FfmpegExecutor
 import java.io.File
 import java.nio.file.Files
@@ -23,6 +36,7 @@ import java.nio.file.Path
 @Service
 class JobService(
     private val repository: ViquseJobRepository,
+    private val callbackService: CallbackService,
     private val resultSummaryRepository: ResultSummaryRepository,
     private val ffmpegExecutor: FfmpegExecutor
 ) {
@@ -36,12 +50,25 @@ class JobService(
 
         if (newJob != null) {
             try {
+                val coroutineJob = Job()
                 logger.debug { "Launching job $newJob" }
                 newJob.status = Status.IN_PROGRESS
                 repository.saveAndFlush(newJob)
                 val workDir = Files.createTempDirectory("viquseJob")
                 val command = inputParams(newJob, workDir.toAbsolutePath())
-                ffmpegExecutor.run(newJob, workDir = workDir.toFile(), command = command)
+
+                runBlocking(coroutineJob + MDCContext()) {
+                    val progressChannel = Channel<Int>()
+                    handleProgress(progressChannel, newJob)
+                    // ffmpegExecutor.run(encoreJob, profile, outputs, progressChannel)
+                    ffmpegExecutor.run(
+                        newJob,
+                        workDir = workDir.toFile(),
+                        command = command,
+                        progressChannel = progressChannel
+                    )
+                }
+
                 newJob.status = Status.SUCCESSFUL
 
                 val logFile = File("$workDir/vmaf.log").readText()
@@ -60,6 +87,27 @@ class JobService(
                     }
                 )
             }
+        }
+    }
+
+    private fun CoroutineScope.handleProgress(
+        progressChannel: ReceiveChannel<Int>,
+        viquseJob: ViquseJob
+    ) {
+        launch {
+            progressChannel.consumeAsFlow()
+                .conflate()
+                .distinctUntilChanged()
+                .sample(10_000)
+                .collect {
+                    logger.info { "RECEIVED PROGRESS $it" }
+                    try {
+                        repository.saveAndFlush(viquseJob.apply { progress = it })
+                        callbackService.sendProgressCallback(viquseJob)
+                    } catch (e: Exception) {
+                        logger.warn(e) { "Error updating progress!" }
+                    }
+                }
         }
     }
 
