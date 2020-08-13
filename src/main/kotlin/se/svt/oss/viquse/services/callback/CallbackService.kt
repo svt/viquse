@@ -23,7 +23,8 @@ class CallbackService(private val callbackClient: CallbackClient) {
                         jobId = viquseJob.jobId,
                         externalId = viquseJob.externalId,
                         progress = viquseJob.progress,
-                        status = viquseJob.status
+                        status = viquseJob.status,
+                        resultSummary = viquseJob.resultSummary?.copy(frameResults = emptyList())
                     )
                 )
             } catch (e: Exception) {
