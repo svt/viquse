@@ -86,6 +86,8 @@ class JobService(
                         message = exception.message
                     }
                 )
+            } finally {
+                callbackService.sendProgressCallback(newJob)
             }
         }
     }
