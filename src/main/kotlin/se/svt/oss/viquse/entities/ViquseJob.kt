@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import se.svt.oss.viquse.model.Status
-import java.net.URI
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Entity
@@ -25,7 +24,7 @@ import javax.persistence.OneToOne
 data class ViquseJob(
     val referenceFile: String,
     val transcodedFile: String,
-    val progressCallbackUri: URI? = null
+    val progressCallbackUri: String? = null
 ) {
     @Id
     val jobId: UUID = UUID.randomUUID()

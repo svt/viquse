@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import se.svt.oss.viquse.entities.ViquseJob
 import se.svt.oss.viquse.model.callback.JobProgress
+import java.net.URI
 
 @Service
 class CallbackService(private val callbackClient: CallbackClient) {
@@ -18,7 +19,7 @@ class CallbackService(private val callbackClient: CallbackClient) {
         viquseJob.progressCallbackUri?.let {
             try {
                 callbackClient.sendProgressCallback(
-                    callbackUri = it,
+                    callbackUri = URI.create(it),
                     progress = JobProgress(
                         jobId = viquseJob.jobId,
                         externalId = viquseJob.externalId,
