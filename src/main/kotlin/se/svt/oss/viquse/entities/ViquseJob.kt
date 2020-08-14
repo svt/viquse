@@ -24,7 +24,8 @@ import javax.persistence.OneToOne
 data class ViquseJob(
     val referenceFile: String,
     val transcodedFile: String,
-    val progressCallbackUri: String? = null
+    val progressCallbackUri: String? = null,
+    val referenceVideoFilters: String? = null
 ) {
     @Id
     val jobId: UUID = UUID.randomUUID()

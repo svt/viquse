@@ -124,9 +124,21 @@ class JobService(
         "-i",
         job.transcodedFile,
         "-lavfi",
-        "[1:v]scale=1920:-1[distorted];[distorted][0:v]libvmaf=log_fmt=json:log_path=$logPath/vmaf.log:n_subsample=1:psnr=true:ssim=true",
+            "[0:v]${getReferenceVideoFilter(job)}[reference];" +
+                    "[1:v]scale=-2:1080[distorted];" +
+                    "[distorted][reference]libvmaf=log_fmt=json:log_path=$logPath/vmaf" +
+                    ".log:n_subsample=1:psnr=true:ssim=true",
         "-f",
         "null",
         "-"
     )
+
+    private fun getReferenceVideoFilter(viquseJob: ViquseJob): String {
+        val scale = "scale=-2:1080"
+        return if (viquseJob.referenceVideoFilters == null) {
+            return scale
+        } else {
+            "${viquseJob.referenceVideoFilters},${scale}"
+        }
+    }
 }
