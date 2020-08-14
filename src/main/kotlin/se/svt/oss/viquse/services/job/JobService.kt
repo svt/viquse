@@ -124,10 +124,10 @@ class JobService(
         "-i",
         job.transcodedFile,
         "-lavfi",
-            "[0:v]${getReferenceVideoFilter(job)}[reference];" +
-                    "[1:v]scale=-2:1080[distorted];" +
-                    "[distorted][reference]libvmaf=log_fmt=json:log_path=$logPath/vmaf" +
-                    ".log:n_subsample=1:psnr=true:ssim=true",
+        "[0:v]${getReferenceVideoFilter(job)}[reference];" +
+            "[1:v]scale=-2:1080[distorted];" +
+            "[distorted][reference]libvmaf=log_fmt=json:log_path=$logPath/vmaf" +
+            ".log:n_subsample=1:psnr=true:ssim=true",
         "-f",
         "null",
         "-"
@@ -138,7 +138,7 @@ class JobService(
         return if (viquseJob.referenceVideoFilters == null) {
             return scale
         } else {
-            "${viquseJob.referenceVideoFilters},${scale}"
+            "${viquseJob.referenceVideoFilters},$scale"
         }
     }
 }

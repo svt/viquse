@@ -21,9 +21,11 @@ class FfmpegExecutor() {
     private val logLevelRegex = Regex(".*\\[(?<level>debug|info|warning|error)].*")
 
     fun getLoglevel(line: String) = logLevelRegex.matchEntire(line)?.groups?.get("level")?.value
-    val progressRegex = Regex(".*frame= *(?<frame>[\\d+]+) fps= *(?<fps>[\\d.+]+) .*" +
+    val progressRegex = Regex(
+        ".*frame= *(?<frame>[\\d+]+) fps= *(?<fps>[\\d.+]+) .*" +
             " time= *(?<hours>[\\d]+):(?<minutes>[\\d]+):(?<seconds>[\\d.]+) .*" +
-            " speed= *(?<speed>[0-9.e-]+x) *")
+            " speed= *(?<speed>[0-9.e-]+x) *"
+    )
 
     fun run(
         viquseJob: ViquseJob,
