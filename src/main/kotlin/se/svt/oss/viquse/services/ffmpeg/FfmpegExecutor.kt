@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.sendBlocking
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import se.svt.oss.viquse.entities.ViquseJob
+import se.svt.oss.viquse.services.ffprobe.getDuration
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -20,7 +21,9 @@ class FfmpegExecutor() {
     private val logLevelRegex = Regex(".*\\[(?<level>debug|info|warning|error)].*")
 
     fun getLoglevel(line: String) = logLevelRegex.matchEntire(line)?.groups?.get("level")?.value
-    val progressRegex = Regex(".*frame= *(?<frame>[\\d+]+) fps= *(?<fps>[\\d.+]+) .* speed= *(?<speed>[0-9.e-]+x) *")
+    val progressRegex = Regex(".*frame= *(?<frame>[\\d+]+) fps= *(?<fps>[\\d.+]+) .*" +
+            " time= *(?<hours>[\\d]+):(?<minutes>[\\d]+):(?<seconds>[\\d.]+) .*" +
+            " speed= *(?<speed>[0-9.e-]+x) *")
 
     fun run(
         viquseJob: ViquseJob,
@@ -30,8 +33,9 @@ class FfmpegExecutor() {
     ): List<String> {
 
         return try {
-            // TODO numFrames should be read from file
-            runFfmpeg(command, workDir, 100) {
+            val duration = getDuration(viquseJob.referenceFile)
+
+            runFfmpeg(command, workDir, duration) {
                 log.info { "Progress: $it" }
                 progressChannel.sendBlocking(it)
             }
@@ -46,7 +50,7 @@ class FfmpegExecutor() {
     private fun runFfmpeg(
         command: List<String>,
         workDir: File,
-        numFrames: Int,
+        duration: Double,
         onProgress: (Int) -> Unit
     ) {
         log.info { "Running" }
@@ -60,7 +64,7 @@ class FfmpegExecutor() {
         val errorLines = mutableListOf<String>()
         ffmpegProcess.inputStream.bufferedReader().useLines { lines ->
             lines.forEach { line ->
-                val progress = getProgress(numFrames, line)
+                val progress = getProgress(duration, line)
                 if (progress != null) {
                     onProgress(progress)
                 } else {
@@ -101,11 +105,14 @@ class FfmpegExecutor() {
         onProgress(100)
     }
 
-    private fun getProgress(numFrames: Int, line: String): Int? {
-        return if (numFrames > 0) {
+    private fun getProgress(duration: Double, line: String): Int? {
+        return if (duration > 0) {
             progressRegex.matchEntire(line)?.let { matchResult ->
-                val frame = matchResult.groups["frame"]?.value?.toInt() ?: 0
-                100 * frame / numFrames
+                val hours = matchResult.groups["hours"]?.value?.toInt() ?: 0
+                val minutes = matchResult.groups["minutes"]?.value?.toInt() ?: 0
+                val seconds = matchResult.groups["seconds"]?.value?.toDouble() ?: 0.0
+                val positionInSeconds = hours * 3600 + minutes * 60 + seconds
+                (100 * positionInSeconds / duration).toInt()
             }
         } else {
             null
