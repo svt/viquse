@@ -70,6 +70,7 @@ class JobService(
                 }
 
                 newJob.status = Status.SUCCESSFUL
+                newJob.progress = 100
 
                 val logFile = File("$workDir/vmaf.log").readText()
                 val jobResult = objectMapper.readValue<JobResult>(logFile)
@@ -77,7 +78,6 @@ class JobService(
                 resultSummaryRepository.saveAndFlush(resultSummary)
                 newJob.resultSummary = resultSummary
                 repository.saveAndFlush(newJob)
-                logger.info { logFile }
             } catch (exception: Exception) {
                 logger.error(exception) { "Job failed" }
                 repository.save(
