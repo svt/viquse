@@ -82,7 +82,7 @@ class JobService(
                 graphService.plotLines(
                     xFrames = resultSummary.frameResults.map { it.frameNumber },
                     yVMAF = resultSummary.frameResults.map { it.vmaf },
-                    destination = Path.of("${graphProperties.destinationPath}$filename")
+                    destination = Path.of("${graphProperties.destinationPath}$filename.html")
                 )
                 resultSummaryRepository.saveAndFlush(resultSummary)
                 newJob.resultSummary = resultSummary
