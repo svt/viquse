@@ -24,6 +24,9 @@ assertjGenerator {
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven("https://dl.bintray.com/mipt-npm/dataforge")
+    maven("https://dl.bintray.com/mipt-npm/kscience")
 }
 
 configurations {
@@ -51,6 +54,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.3.6")
 
+    implementation("kscience.plotlykt:plotlykt-core:0.2.0")
+
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("io.github.openfeign:feign-okhttp")
 
@@ -64,6 +69,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("mysql:mysql-connector-java")
+    testImplementation("io.mockk:mockk:1.10.0")
+    testImplementation("com.ninja-squad:springmockk:1.1.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
