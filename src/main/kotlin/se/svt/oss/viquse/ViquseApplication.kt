@@ -5,9 +5,12 @@
 package se.svt.oss.viquse
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.cloud.openfeign.EnableFeignClients
+import se.svt.oss.viquse.config.GraphProperties
 
+@EnableConfigurationProperties(GraphProperties::class)
 @EnableFeignClients
 @SpringBootApplication
 class ViquseApplication

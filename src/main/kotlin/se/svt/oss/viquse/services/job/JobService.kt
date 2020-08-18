@@ -21,6 +21,7 @@ import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import se.svt.oss.viquse.config.GraphProperties
 import se.svt.oss.viquse.entities.ResultSummary
 import se.svt.oss.viquse.entities.ViquseJob
 import se.svt.oss.viquse.model.Status
@@ -29,6 +30,7 @@ import se.svt.oss.viquse.repository.ResultSummaryRepository
 import se.svt.oss.viquse.repository.ViquseJobRepository
 import se.svt.oss.viquse.services.callback.CallbackService
 import se.svt.oss.viquse.services.ffmpeg.FfmpegExecutor
+import se.svt.oss.viquse.services.graph.GraphService
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -38,7 +40,9 @@ class JobService(
     private val repository: ViquseJobRepository,
     private val callbackService: CallbackService,
     private val resultSummaryRepository: ResultSummaryRepository,
-    private val ffmpegExecutor: FfmpegExecutor
+    private val ffmpegExecutor: FfmpegExecutor,
+    private val graphService: GraphService,
+    private val graphProperties: GraphProperties
 ) {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -53,6 +57,7 @@ class JobService(
                 val coroutineJob = Job()
                 logger.debug { "Launching job $newJob" }
                 newJob.status = Status.IN_PROGRESS
+                val filename = File(newJob.transcodedFile).nameWithoutExtension
                 repository.saveAndFlush(newJob)
                 val workDir = Files.createTempDirectory("viquseJob")
                 val command = inputParams(newJob, workDir.toAbsolutePath())
@@ -60,7 +65,6 @@ class JobService(
                 runBlocking(coroutineJob + MDCContext()) {
                     val progressChannel = Channel<Int>()
                     handleProgress(progressChannel, newJob)
-                    // ffmpegExecutor.run(encoreJob, profile, outputs, progressChannel)
                     ffmpegExecutor.run(
                         newJob,
                         workDir = workDir.toFile(),
@@ -75,6 +79,11 @@ class JobService(
                 val logFile = File("$workDir/vmaf.log").readText()
                 val jobResult = objectMapper.readValue<JobResult>(logFile)
                 val resultSummary = ResultSummary.fromJobResult(jobResult)
+                graphService.plotLines(
+                    xFrames = resultSummary.frameResults.map { it.frameNumber },
+                    yVMAF = resultSummary.frameResults.map { it.vmaf },
+                    destination = Path.of("${graphProperties.destinationPath}$filename")
+                )
                 resultSummaryRepository.saveAndFlush(resultSummary)
                 newJob.resultSummary = resultSummary
                 repository.saveAndFlush(newJob)
