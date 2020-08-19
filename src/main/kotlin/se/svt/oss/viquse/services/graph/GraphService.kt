@@ -30,7 +30,7 @@ class GraphService(
                     title = "VMAF score per frame"
                 }
             }
-        }.makeFile(destinationPath)
+        }.makeFile(destinationPath, show = false)
         return destinationPath.toAbsolutePath()
     }
 }
