@@ -1,5 +1,6 @@
 package se.svt.oss.viquse.controller
 
+import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,19 +17,29 @@ class ViquseController(
     val graphService: GraphService
 ) {
 
+    private val logger = KotlinLogging.logger { }
+
     @GetMapping("/generatePlot/{externalId}")
     fun plotVmafResult(@PathVariable("externalId") externalId: String): ResponseEntity<String> {
-        val jobList = viquseJobRepository.findByExternalIdIn(listOf(externalId))
-        if (jobList.isEmpty()) return ResponseEntity.notFound().build()
+        try {
+            val jobList = viquseJobRepository.findByExternalIdIn(listOf(externalId))
+            logger.debug { "Found list containing ${jobList.size} jobs" }
 
-        val job = jobList
-            .filter { it.status == Status.SUCCESSFUL }
-            .sortedByDescending { it.lastModifiedDate }
-            .first()
-        val fileName = File(job.transcodedFile).nameWithoutExtension
-        val frameNumbers = job.resultSummary?.frameResults?.map { it.frameNumber } ?: emptyList()
-        val vmafScores = job.resultSummary?.frameResults?.map { it.vmaf } ?: emptyList()
-        val destination = graphService.plotLines(frameNumbers, vmafScores, Path.of(fileName))
-        return ResponseEntity.ok("Created plot with filename: $fileName at destination $destination")
+            if (jobList.isEmpty()) return ResponseEntity.notFound().build()
+
+            val job = jobList
+                .filter { it.status == Status.SUCCESSFUL }
+                .sortedByDescending { it.lastModifiedDate }
+                .first()
+            logger.debug { "Chose job $job with lastModifiedDate ${job.lastModifiedDate}" }
+            val fileName = File(job.transcodedFile).nameWithoutExtension
+            val frameNumbers = job.resultSummary?.frameResults?.map { it.frameNumber } ?: emptyList()
+            val vmafScores = job.resultSummary?.frameResults?.map { it.vmaf } ?: emptyList()
+            val destination = graphService.plotLines(frameNumbers, vmafScores, Path.of(fileName))
+            return ResponseEntity.ok("Created plot with filename: $fileName at destination $destination")
+        } catch (e: Exception) {
+            logger.error(e) { "Error encountered when trying to generate plot: ${e.message}" }
+            return ResponseEntity.badRequest().body("Error: ${e.message}")
+        }
     }
 }
