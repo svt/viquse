@@ -17,7 +17,7 @@ class GraphService(
 ) {
 
     fun plotLines(xFrames: List<Int>, yVMAF: List<Float>, filename: String): Path {
-        val destinationPath = Path.of("${graphProperties.destinationPath}/$filename")
+        val destinationPath = Path.of("${graphProperties.destinationPath}/$filename.html")
         Plotly.page {
             plot {
                 scatter {
