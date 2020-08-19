@@ -7,6 +7,7 @@ package se.svt.oss.viquse.entities
 import se.svt.oss.viquse.model.vmaf.JobResult
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -25,7 +26,7 @@ data class ResultSummary(
     val subsample: Int,
     val pool: String,
     val frameCount: Int,
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     val frameResults: List<FrameResult>
 ) {
 
