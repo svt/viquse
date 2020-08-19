@@ -5,6 +5,7 @@
 package se.svt.oss.viquse.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.query.Param
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import se.svt.oss.viquse.entities.ViquseJob
 import se.svt.oss.viquse.model.Status
@@ -12,6 +13,8 @@ import java.util.UUID
 
 @RepositoryRestResource
 interface ViquseJobRepository : JpaRepository<ViquseJob, UUID> {
+
+    fun findByExternalIdIn(@Param("externalIds") externalIds: Collection<String>): List<ViquseJob>
 
     fun findFirstByStatusIn(statuses: List<Status>): List<ViquseJob>
 

@@ -13,7 +13,7 @@ import java.nio.file.Path
 @Service
 class GraphService {
 
-    fun plotLines(xFrames: List<Int>, yVMAF: List<Float>, destination: Path) {
+    fun plotLines(xFrames: List<Int>, yVMAF: List<Float>, destination: Path): Path {
         Plotly.page {
             plot {
                 scatter {
@@ -27,5 +27,6 @@ class GraphService {
                 }
             }
         }.makeFile(destination)
+        return destination
     }
 }
