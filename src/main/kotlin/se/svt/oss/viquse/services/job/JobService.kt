@@ -21,7 +21,6 @@ import kotlinx.coroutines.slf4j.MDCContext
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import se.svt.oss.viquse.config.GraphProperties
 import se.svt.oss.viquse.entities.ResultSummary
 import se.svt.oss.viquse.entities.ViquseJob
 import se.svt.oss.viquse.model.Status
@@ -41,8 +40,7 @@ class JobService(
     private val callbackService: CallbackService,
     private val resultSummaryRepository: ResultSummaryRepository,
     private val ffmpegExecutor: FfmpegExecutor,
-    private val graphService: GraphService,
-    private val graphProperties: GraphProperties
+    private val graphService: GraphService
 ) {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -82,7 +80,7 @@ class JobService(
                 graphService.plotLines(
                     xFrames = resultSummary.frameResults.map { it.frameNumber },
                     yVMAF = resultSummary.frameResults.map { it.vmaf },
-                    destination = Path.of("${graphProperties.destinationPath}$filename.html")
+                    filename = filename
                 )
                 resultSummaryRepository.saveAndFlush(resultSummary)
                 newJob.resultSummary = resultSummary

@@ -8,12 +8,16 @@ import kscience.plotly.page
 import kscience.plotly.plot
 import kscience.plotly.scatter
 import org.springframework.stereotype.Service
+import se.svt.oss.viquse.config.GraphProperties
 import java.nio.file.Path
 
 @Service
-class GraphService {
+class GraphService(
+    private val graphProperties: GraphProperties
+) {
 
-    fun plotLines(xFrames: List<Int>, yVMAF: List<Float>, destination: Path): Path {
+    fun plotLines(xFrames: List<Int>, yVMAF: List<Float>, filename: String): Path {
+        val destinationPath = Path.of("${graphProperties.destinationPath}/$filename")
         Plotly.page {
             plot {
                 scatter {
@@ -26,7 +30,7 @@ class GraphService {
                     title = "VMAF score per frame"
                 }
             }
-        }.makeFile(destination)
-        return destination
+        }.makeFile(destinationPath)
+        return destinationPath.toAbsolutePath()
     }
 }

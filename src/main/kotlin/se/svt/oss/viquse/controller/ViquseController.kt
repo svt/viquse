@@ -9,7 +9,6 @@ import se.svt.oss.viquse.model.Status
 import se.svt.oss.viquse.repository.ViquseJobRepository
 import se.svt.oss.viquse.services.graph.GraphService
 import java.io.File
-import java.nio.file.Path
 
 @RestController
 class ViquseController(
@@ -32,11 +31,11 @@ class ViquseController(
                 .sortedByDescending { it.lastModifiedDate }
                 .first()
             logger.debug { "Chose job $job with lastModifiedDate ${job.lastModifiedDate}" }
-            val fileName = File(job.transcodedFile).nameWithoutExtension
+            val filename = File(job.transcodedFile).nameWithoutExtension
             val frameNumbers = job.resultSummary?.frameResults?.map { it.frameNumber } ?: emptyList()
             val vmafScores = job.resultSummary?.frameResults?.map { it.vmaf } ?: emptyList()
-            val destination = graphService.plotLines(frameNumbers, vmafScores, Path.of(fileName))
-            return ResponseEntity.ok("Created plot with filename: $fileName at destination $destination")
+            val destination = graphService.plotLines(frameNumbers, vmafScores, filename)
+            return ResponseEntity.ok("Created plot with filename: $filename at destination $destination")
         } catch (e: Exception) {
             logger.error(e) { "Error encountered when trying to generate plot: ${e.message}" }
             return ResponseEntity.badRequest().body("Error: ${e.message}")
