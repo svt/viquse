@@ -6,6 +6,9 @@
       ╚═══╝  ╚═╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚══════╝
                  VIDEO QUALITY SERVER
                                               
+*NOTE: VIQUSE IS NO LONGER MAINTAINED. ISSUES, PULL REQUESTS ETC WILL NOT BE HANDLED.*
+                                              
+                                              
 [![REUSE status](https://api.reuse.software/badge/git.fsfe.org/reuse/api)](https://api.reuse.software/info/git.fsfe.org/reuse/api)
 
 Viquse is a service for calculating objective video quality metrics. It currently supports
